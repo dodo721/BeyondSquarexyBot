@@ -9,9 +9,7 @@ let mcServerProc;
 const setupMCServer = async () => {
     // Server process
     try {
-        await execSync('cd ~/minecraft/');
-        mcServerProc = spawn('./run.sh');
-
+        mcServerProc = spawn('./run.sh', {cwd:"~/minecraft/"});
         const onLog = data => {
             process.stdout.write(data.toString());
         }
