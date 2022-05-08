@@ -39,7 +39,7 @@ mcEvents.EVENTS.forEach(event => {
 
 const setupMCServer = async () => {
     // Server process
-    mcServerProc = spawn('bash', ['./run.sh'], {cwd:"/home/worker/minecraft/", stdio:"inherit"});
+    mcServerProc = spawn('bash', ['./run.sh'], {cwd:"/home/worker/minecraft/"});
 
     const onLog = data => {
         process.stdout.write(data.toString());
