@@ -4,16 +4,24 @@ const { exec, spawn, execSync } = require('child_process');
 
 if (!token) throw new Error("Missing token from config.json!");
 
-// Server process
-await execSync('cd ~/minecraft/');
-const mcServerProc = spawn('./run.sh');
+let mcServerProc;
 
-const onLog = data => {
-    process.stdout.write(data.toString());
+const setupMCServer = async () => {
+
+    // Server process
+    await execSync('cd ~/minecraft/');
+    mcServerProc = spawn('./run.sh');
+
+    const onLog = data => {
+        process.stdout.write(data.toString());
+    }
+
+    mcServerProc.stdout.on('data', onLog);
+    mcServerProc.stderr.on('data', onLog);
+
 }
 
-mcServerProc.stdout.on('data', onLog);
-mcServerProc.stderr.on('data', onLog);
+setupMCServer();
 
 const mcCommand = async command => {
     mcServerProc.stdin.write(command+'\n');
