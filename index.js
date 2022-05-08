@@ -66,6 +66,10 @@ mcEvents.on("serverStart", () => {
     console.log("Server starting!!");
 });
 
+mcEvents.on("serverStop", () => {
+    console.log("Server stopped!!");
+});
+
 console.log("Starting server...");
 setupMCServer().catch(e => {
     console.error(e);
