@@ -7,18 +7,21 @@ if (!token) throw new Error("Missing token from config.json!");
 let mcServerProc;
 
 const setupMCServer = async () => {
-
     // Server process
-    await execSync('cd ~/minecraft/');
-    mcServerProc = spawn('./run.sh');
+    try {
+        await execSync('cd ~/minecraft/');
+        mcServerProc = spawn('./run.sh');
 
-    const onLog = data => {
-        process.stdout.write(data.toString());
+        const onLog = data => {
+            process.stdout.write(data.toString());
+        }
+
+        mcServerProc.stdout.on('data', onLog);
+        mcServerProc.stderr.on('data', onLog);
+    } catch (e) {
+        console.error(e);
+        process.exit();
     }
-
-    mcServerProc.stdout.on('data', onLog);
-    mcServerProc.stderr.on('data', onLog);
-
 }
 
 setupMCServer();
