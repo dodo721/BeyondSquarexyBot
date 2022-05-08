@@ -1,11 +1,12 @@
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { exec, spawn } = require('child_process');
+const { exec, spawn, execSync } = require('child_process');
 
 if (!token) throw new Error("Missing token from config.json!");
 
 // Server process
-const mcServerProc = spawn('cd ~/minecraft/ && ./run.sh');
+await execSync('cd ~/minecraft/');
+const mcServerProc = spawn('./run.sh');
 
 const onLog = data => {
     process.stdout.write(data.toString());
