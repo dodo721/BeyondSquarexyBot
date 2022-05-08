@@ -107,6 +107,7 @@ client.on('interactionCreate', async interaction => {
     } else if (commandName == 'restart') {
         if (mcServerProc) {
             mcCommand("stop");
+            interaction.reply("Restarting...");
             mcEvents.once("serverStop", () => {
                 setupMCServer().catch(e => {
                     console.error(e);
