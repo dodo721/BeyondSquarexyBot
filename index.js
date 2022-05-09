@@ -1,9 +1,12 @@
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { mcCommand, mcEvents, mcFlags, setupMCServer } = require('./mcServer.js');
+const { mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig } = require('./mcServer.js');
 const readline = require('readline');
 
 if (!token) throw new Error("Missing token from config.json!");
+
+mcConfig.cmd = "./run.sh";
+mcConfig.cwd = "/home/worker/minecraft/";
 
 // SERVER STUFF
 mcEvents.on("serverStart", () => {

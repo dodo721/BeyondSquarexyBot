@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 
+let mcConfig = {cmd:"./run.sh", cwd:"/home/minecraft/"};
 let mcServerProc;
 
 // Number representing flags, each bit is a flag, by index
@@ -55,15 +56,18 @@ mcEvents.EVENTS.forEach(event => {
     _mcEvents[event] = [];
 });
 
-const setupMCServer = async () => {
+const setupMCServer = async (config) => {
     if (mcFlags.ON()) throw new Error("Server is already running!");
+
+    if (!config) config = mcConfig;
+    ({cmd, cwd}) = config;
 
     // Server is starting!
     _setMcFlags.STARTING(true);
     _setMcFlags.WORKING(true);
 
     // Server process
-    mcServerProc = spawn('bash', ['./run.sh'], {cwd:"/home/worker/minecraft/"});
+    mcServerProc = spawn('bash', [cmd], {cwd});
 
     const onLog = data => {
         if (data.toString().match(/\[minecraft\/DedicatedServer\]: Done \(\d+\.\d+s\)! For help, type "help"/g)) {
@@ -122,4 +126,4 @@ const mcCommand = async (command, forceSend) => {
     return buffer.join('');
 }
 
-module.exports = {mcCommand, mcEvents, mcFlags, setupMCServer};
+module.exports = {mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig};
