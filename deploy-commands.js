@@ -4,7 +4,7 @@ const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./config.json');
 
 const commands = [
-	new SlashCommandBuilder().setName('ping').setDescription('Check server is alive!'),
+	new SlashCommandBuilder().setName('ping').setDescription('Check the bot is alive!'),
 	new SlashCommandBuilder().setName('status').setDescription('Gives stat rundown of the server'),
     new SlashCommandBuilder().setName('restart').setDescription('Restart the server (takes a while!)'),
     new SlashCommandBuilder().setName('stop').setDescription('Stops the server'),
