@@ -1,6 +1,7 @@
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { exec, spawn, execSync } = require('child_process');
+const { spawn } = require('child_process');
+const readline = require('readline');
 
 if (!token) throw new Error("Missing token from config.json!");
 
@@ -140,8 +141,12 @@ const mcCommand = async (command, forceSend) => {
 }
 
 // Terminal commands
-const stdin = process.openStdin();
-stdin.on('data', chunk => mcCommand(chunk.replace(/\n$/, "").catch(e => console.error(e))));
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+});
+rl.on('line', line => mcCommand(line.replace(/\n$/, "").catch(e => console.error(e))));
 
 // Discord bot
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
