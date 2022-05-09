@@ -141,7 +141,7 @@ const mcCommand = async (command, forceSend) => {
 
 // Terminal commands
 const stdin = process.openStdin();
-stdin.on('data', chunk => mcCommand(chunk));
+stdin.on('data', chunk => mcCommand(chunk.replace(/\n$/, "").catch(e => console.error(e))));
 
 // Discord bot
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
