@@ -6,8 +6,9 @@ if (!token) throw new Error("Missing token from config.json!");
 
 let mcServerProc;
 const _mcEvents = {};
+const _mcFlags = {};
 const mcEvents = {
-    EVENTS: ["serverStart", "serverStop", "serverOutput", "serverErr"],
+    EVENTS: ["serverStarting", "serverStart", "serverStopping", "serverStop", "serverOutput", "serverErr"],
     on: (event, func) => {
         if (!_mcEvents[event]) throw new Error ("Event " + event + " does not exist!");
         if (_mcEvents[event].includes(func)) return;
@@ -26,7 +27,7 @@ const mcEvents = {
         if (index == -1) return;
         _mcEvents[event].splice(index, 1);
     },
-    trigger: (event, ...data) => {
+    trigger: async (event, ...data) => {
         if (!_mcEvents[event]) throw new Error ("Event " + event + " does not exist!");
         _mcEvents[event].forEach(func => {
             func && func(...data);
@@ -43,10 +44,13 @@ const setupMCServer = async () => {
 
     const onLog = data => {
         process.stdout.write(data.toString());
+        if (data.toString().match(/\[minecraft\/DedicatedServer\]: Done \(\d+\.\d+s\)! For help, type "help"/g)) {
+            mcEvents.trigger("serverStart");
+        }
     }
     mcServerProc.stdout.on('data', data => {
         onLog(data);
-        mcEvents.trigger("serverOutput", data)
+        mcEvents.trigger("serverOutput", data);
     });
     mcServerProc.stderr.on('data', data => {
         onLog(data);
@@ -54,16 +58,15 @@ const setupMCServer = async () => {
     });
     
     mcServerProc.on('close', () => {
-        console.log("Server shut down!");
         mcEvents.trigger("serverStop");
         mcServerProc = null;
     });
 
-    mcEvents.trigger("serverStart");
+    mcEvents.trigger("serverStarting");
 }
 
 mcEvents.on("serverStart", () => {
-    console.log("Server starting!!");
+    console.log("Server started!!");
 });
 
 mcEvents.on("serverStop", () => {
@@ -78,6 +81,7 @@ setupMCServer().catch(e => {
 const mcCommand = async command => {
     if (!mcServerProc) throw new Error ("Server is not running!");
     mcServerProc.stdin.write(command+'\n');
+    if (command === "stop") mcEvents.trigger("serverStopping");
 
     // buffer output for a quarter of a second, then reply to HTTP request
     var buffer = [];
@@ -90,6 +94,10 @@ const mcCommand = async command => {
     mcServerProc.stdout.removeListener('data', collector);
     return buffer.join('');
 }
+
+// Terminal commands
+const stdin = process.openStdin();
+stdin.on('data', chunk => mcCommand(chunk));
 
 // Discord bot
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
