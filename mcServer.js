@@ -114,16 +114,21 @@ const mcCommand = async (command, forceSend) => {
         mcEvents.trigger("serverStopping");
     }
 
-    // buffer output for a quarter of a second, then reply to HTTP request
-    var buffer = [];
-    var collector = function(data) {
-        data = data.toString();
-        buffer.push(data.split(']: ')[1]);
-    };
-    mcServerProc.stdout.on('data', collector);
-    await new Promise(r => setTimeout(r, 250));
-    mcServerProc.stdout.removeListener('data', collector);
-    return buffer.join('');
+    return new Promise((resolve, reject) => {
+        let responded = false;
+        mcEvents.once("serverOutput", data => {
+            if (!responded) {
+                responded = true;
+                resolve(data);
+            }
+        });
+        mcEvents.once("serverErr", data => {
+            if (!responded) {
+                responded = true;
+                reject(data);
+            }
+        })
+    })
 }
 
 module.exports = {mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig};

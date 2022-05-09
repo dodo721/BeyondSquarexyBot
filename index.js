@@ -1,4 +1,4 @@
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 const { token } = require('./config.json');
 const { mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig } = require('./mcServer.js');
 const readline = require('readline');
@@ -55,8 +55,8 @@ client.on('interactionCreate', async interaction => {
 	} else if (commandName == 'stop') {
         if (mcFlags.WORKING()) return await interaction.reply("Server is busy!");
         try {
-            await mcCommand('stop');
-            await interaction.reply("Server stopping!");
+            const response = await mcCommand('stop');
+            await interaction.reply(response);
         } catch (e) {
             console.error(e);
             await interaction.reply("There was an error:\n" + e.toString());
@@ -79,6 +79,8 @@ client.on('interactionCreate', async interaction => {
                 interaction.reply("Server failed to start!\n" + e.toString());
             });
         }
+    } else if (commandName == 'status') {
+
     }
 });
 
