@@ -14,12 +14,12 @@ mcEvents.on("serverStop", () => {
     console.log("Server stopped!!");
 });
 
-mcEvents.on("serverOutput", () => {
-    process.stdout.write(data.toString());
+mcEvents.on("serverOutput", data => {
+    process.stdout.write(data);
 });
 
-mcEvents.on("serverErr", () => {
-    process.stderr.write(data.toString());
+mcEvents.on("serverErr", data => {
+    process.stderr.write(data);
 })
 
 console.log("Starting server...");
