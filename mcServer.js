@@ -66,7 +66,6 @@ const setupMCServer = async () => {
     mcServerProc = spawn('bash', ['./run.sh'], {cwd:"/home/worker/minecraft/"});
 
     const onLog = data => {
-        process.stdout.write(data.toString());
         if (data.toString().match(/\[minecraft\/DedicatedServer\]: Done \(\d+\.\d+s\)! For help, type "help"/g)) {
             // Server has started succesfully!
             _setMcFlags.ON(true);
@@ -78,12 +77,12 @@ const setupMCServer = async () => {
     mcServerProc.stdout.on('data', data => {
         // Server is giving output
         onLog(data);
-        mcEvents.trigger("serverOutput", data);
+        mcEvents.trigger("serverOutput", data.toString());
     });
     mcServerProc.stderr.on('data', data => {
         // Server is showing errors
         onLog(data);
-        mcEvents.trigger("serverErr", data);
+        mcEvents.trigger("serverErr", data.toString());
     });
     
     mcServerProc.on('close', () => {

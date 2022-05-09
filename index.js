@@ -14,6 +14,14 @@ mcEvents.on("serverStop", () => {
     console.log("Server stopped!!");
 });
 
+mcEvents.on("serverOutput", () => {
+    process.stdout.write(data.toString());
+});
+
+mcEvents.on("serverErr", () => {
+    process.stderr.write(data.toString());
+})
+
 console.log("Starting server...");
 setupMCServer().catch(e => {
     console.error(e);
@@ -25,7 +33,7 @@ const rl = readline.createInterface({
     output: process.stdout,
     terminal: false
 });
-rl.on('line', line => mcCommand(line.replace(/\n$/, "").catch(e => console.error(e))));
+rl.on('line', line => mcCommand(line.replace(/\n$/, "")).catch(e => console.error(e)));
 
 // Discord bot
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
