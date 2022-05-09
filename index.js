@@ -60,8 +60,8 @@ const setupMCServer = async () => {
     });
     
     mcServerProc.on('close', () => {
-        mcEvents.trigger("serverStop");
         mcServerProc = null;
+        mcEvents.trigger("serverStop");
     });
 
     mcEvents.trigger("serverStarting");
