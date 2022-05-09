@@ -8,7 +8,11 @@ const percentMemUsed = () => {
 }
 
 const percentCpuUsed = () => {
-    const cpu = execSync('top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk \'{print 100 - $1"%"}\'');
+    const cpu = execSync(`
+        top -bn1 | grep "Cpu(s)" | \
+        sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | \
+        awk '{print 100 - $1}'
+    `);
     return format(cpu);
 }
 
