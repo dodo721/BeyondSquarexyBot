@@ -1,6 +1,7 @@
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const { token } = require('./config.json');
-const { mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig } = require('./mcServer.js');
+const { mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig } = require('./mcServer');
+const { percentMemUsed } = require('./pcStats');
 const readline = require('readline');
 
 if (!token) throw new Error("Missing token from config.json!");
@@ -25,10 +26,10 @@ mcEvents.on("serverErr", data => {
     process.stderr.write(data);
 })
 
-console.log("Starting server...");
+/*console.log("Starting server...");
 setupMCServer().catch(e => {
     console.error(e);
-});
+});*/
 
 // Terminal commands
 const rl = readline.createInterface({
@@ -80,7 +81,8 @@ client.on('interactionCreate', async interaction => {
             });
         }
     } else if (commandName == 'status') {
-
+        const mem = percentMemUsed();
+        interaction.reply("Memory: " + mem + "%");
     }
 });
 
