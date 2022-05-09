@@ -118,7 +118,8 @@ client.on('interactionCreate', async interaction => {
             const response = await mcCommand('stop');
             await interaction.reply(response);
         } catch (e) {
-            await interaction.reply("The server is not running! Use /restart to start it again.");
+            console.error(e);
+            await interaction.reply("There was an error:\n" + e.toString());
         }
     } else if (commandName == 'restart') {
         if (mcServerProc) {
