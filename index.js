@@ -65,7 +65,7 @@ const setupMCServer = async () => {
     mcEvents.trigger("serverStarting");
 }
 
-mcEvents.on("serverStart", () => {
+mcEvents.once("serverStart", () => {
     console.log("Server started!!");
 });
 
