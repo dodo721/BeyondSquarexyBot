@@ -1,7 +1,7 @@
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const { token } = require('./config.json');
 const { mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig } = require('./mcServer');
-const { percentMemUsed } = require('./pcStats');
+const { percentMemUsed, percentCpuUsed } = require('./pcStats');
 const readline = require('readline');
 
 if (!token) throw new Error("Missing token from config.json!");
@@ -82,7 +82,8 @@ client.on('interactionCreate', async interaction => {
         }
     } else if (commandName == 'status') {
         const mem = percentMemUsed();
-        interaction.reply("Memory: " + mem + "%");
+        const cpu = percentCpuUsed();
+        interaction.reply("Memory: " + mem + "%\nCPU: " + cpu + "%");
     }
 });
 
