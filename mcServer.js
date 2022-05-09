@@ -60,7 +60,7 @@ const setupMCServer = async (config) => {
     if (mcFlags.ON()) throw new Error("Server is already running!");
 
     if (!config) config = mcConfig;
-    ({cmd, cwd}) = config;
+    let {cmd, cwd} = config;
 
     // Server is starting!
     _setMcFlags.STARTING(true);
