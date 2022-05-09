@@ -39,6 +39,8 @@ mcEvents.EVENTS.forEach(event => {
 });
 
 const setupMCServer = async () => {
+    if (mcServerProc) throw new Error("Server is already running!");
+
     // Server process
     mcServerProc = spawn('bash', ['./run.sh'], {cwd:"/home/worker/minecraft/"});
 
@@ -131,6 +133,7 @@ client.on('interactionCreate', async interaction => {
                 });
             });
         } else {
+            console.log("No MCServerProc??", mcServerProc);
             setupMCServer().then(() => {
                 interaction.reply("Server starting!");
             }).catch(e => {
