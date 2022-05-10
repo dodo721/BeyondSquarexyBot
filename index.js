@@ -122,7 +122,7 @@ client.on('interactionCreate', async interaction => {
             )
             .setTimestamp();
         
-        interaction.reply(embed);
+        interaction.reply({content:embed});
     }
 });
 
