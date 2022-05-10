@@ -70,7 +70,7 @@ const setupMCServer = async (config) => {
     mcServerProc = spawn('bash', [cmd], {cwd});
 
     const onLog = data => {
-        if (data.toString().match(/^\[\d+:\d+:\d+\] \[Server thread\/INFO\] \[minecraft\/DedicatedServer\]: Done \(\d+\.\d+s\)! For help, type "help"$/g)) {
+        if (data.toString().match(/^\[\d+:\d+:\d+\] \[Server thread\/INFO\] \[minecraft\/DedicatedServer\]: Done \(\d+\.\d+s\)! For help, type "help"/g)) {
             // Server has started succesfully!
             _setMcFlags.ON(true);
             _setMcFlags.STARTING(false);
