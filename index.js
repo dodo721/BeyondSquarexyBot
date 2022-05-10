@@ -104,7 +104,25 @@ client.on('interactionCreate', async interaction => {
     } else if (commandName == 'status') {
         const mem = percentMemUsed();
         const cpu = percentCpuUsed();
-        interaction.reply("Memory: " + mem + "%\nCPU: " + cpu + "%");
+
+        let state;
+        if (mcFlags.STARTING()) state = "Starting";
+        else if (mcFlags.STOPPING()) state = "Stopping";
+        else if (mcFlags.ON()) state = "On";
+        else state = "Off";
+
+        const embed = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Minecraft Server Status')
+            .setThumbnail('https://media.forgecdn.net/avatars/399/230/637602609368637818.png')
+            .addFields(
+                { name: "Memory useage", value: mem, inline: true },
+                { name: "CPU useage", value: cpu, inline: true },
+                { name: "State", value: state }
+            )
+            .setTimestamp();
+        
+        interaction.reply(embed);
     }
 });
 
