@@ -77,8 +77,8 @@ client.on('interactionCreate', async interaction => {
 	} else if (commandName == 'stop') {
         if (mcFlags.WORKING()) return await interaction.reply("Server is busy!");
         try {
-            const response = await mcCommand('stop');
-            await interaction.reply(response);
+            await mcCommand('stop');
+            await interaction.reply("Stopping the server!");
         } catch (e) {
             console.error(e);
             await interaction.reply("There was an error:\n" + e.toString());
@@ -111,8 +111,10 @@ client.on('interactionCreate', async interaction => {
         else if (mcFlags.ON()) state = "On";
         else state = "Off";
 
+        const color = mcFlags.WORKING() ? "#F28C28" : (mcFlags.ON() ? "#00ff00" : "#ff0000");
+
         const embed = new MessageEmbed()
-            .setColor('#ff0000')
+            .setColor(color)
             .setTitle('Minecraft Server Status')
             .setThumbnail('https://media.forgecdn.net/avatars/399/230/637602609368637818.png')
             .addFields(
