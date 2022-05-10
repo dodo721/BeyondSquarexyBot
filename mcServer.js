@@ -94,6 +94,7 @@ const setupMCServer = async (config) => {
         mcServerProc = null;
         _setMcFlags.ON(false);
         _setMcFlags.STOPPING(false);
+        _setMcFlags.STARTING(false);
         _setMcFlags.WORKING(false);
         mcEvents.trigger("serverStop");
     });

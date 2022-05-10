@@ -18,10 +18,22 @@ mcEvents.on("serverStop", () => {
     console.log("Server stopped!!");
 });
 
+// Logging can be paused and buffered when a command requires input
+let _pauseLog = false;
+let _logBuffer = "";
+const setLogPause = pause => {
+    _pauseLog = pause;
+    if (!pause) {
+        process.stdout.write(_logBuffer);
+        _logBuffer = "";
+    }
+};
 mcEvents.on("serverOutput", data => {
-    process.stdout.write(data);
+    if (!pause) process.stdout.write(data);
+    else _logBuffer += data + "\n";
 });
 
+// Server errors cannot be paused
 mcEvents.on("serverErr", data => {
     process.stderr.write(data);
 })
@@ -31,13 +43,22 @@ setupMCServer().catch(e => {
     console.error(e);
 });*/
 
+let tempInputCapture = null;
+
+const onInput = input => {
+    if (tempInputCapture) {
+        tempInputCapture(input);
+        tempInputCapture = null;
+    } else mcCommand(input).catch(e => console.error(e));
+}
+
 // Terminal commands
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     terminal: false
 });
-rl.on('line', line => mcCommand(line.replace(/\n$/, "")).catch(e => console.error(e)));
+rl.on('line', line => onInput(line.replace(/\n$/, "")));
 
 // Discord bot
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
@@ -88,3 +109,21 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.login(token);
+
+const exitHandler = () => {
+    if (mcFlags.ON() || mcFlags.WORKING()) {
+        setLogPause(true);
+        console.log("The server is currently unsafe to terminate! Continue? (y/n)");
+        tempInputCapture = input => {
+            setLogPause(false);
+            if (input.toLowerCase() === "y" || input.toLowerCase() === "yes") {
+                console.log("Bye bye!");
+                process.exit();
+            }
+        }
+    } else process.exit();
+};
+
+process.on('SIGINT', exitHandler);
+process.on('SIGTERM', exitHandler);
+process.on('SIGHUP', exitHandler);
