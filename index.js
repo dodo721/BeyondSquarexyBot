@@ -1,6 +1,7 @@
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const { token } = require('./config.json');
 const { mcCommand, mcEvents, mcFlags, setupMCServer, mcConfig } = require('./mcServer');
+const mcUtil = require('minecraft-server-util');
 const { percentMemUsed, percentCpuUsed } = require('./pcStats');
 const readline = require('readline');
 
@@ -102,8 +103,8 @@ client.on('interactionCreate', async interaction => {
             });
         }
     } else if (commandName == 'status') {
-        const mem = percentMemUsed();
-        const cpu = percentCpuUsed();
+        const mem = Math.round(percentMemUsed()) + "%";
+        const cpu = Math.round(percentCpuUsed()) + "%";
 
         let state;
         if (mcFlags.STARTING()) state = "Starting";
@@ -123,8 +124,20 @@ client.on('interactionCreate', async interaction => {
                 { name: "State", value: state }
             )
             .setTimestamp();
-        
-        interaction.reply({embeds:[embed]});
+
+        mcUtil.status("localhost", 25565, {timeout: 2000}).then(res => {
+            embed.addFields(
+                { name: "Players", value:res.players.online + "/" + res.players.max, inline: true },
+                { name: "Version", value: res.version.name, inline: true },
+                { name: "MOTD", value: res.motd.clean, inline: true }
+            );
+            interaction.reply({embeds:[embed]});
+        }).catch(e => {
+            embed.addField("Couldn't fetch server info", e.toString());
+            interaction.reply({embeds:[embed]});
+        });
+    } else if (commandName === "piss") {
+        interaction.reply("shit and cum");
     }
 });
 

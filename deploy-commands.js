@@ -8,7 +8,7 @@ const commands = [
 	new SlashCommandBuilder().setName('status').setDescription('Gives stat rundown of the server'),
     new SlashCommandBuilder().setName('restart').setDescription('Restart the server (takes a while!)'),
     new SlashCommandBuilder().setName('stop').setDescription('Stops the server'),
-    new SlashCommandBuilder().setName('piss').setDescription('piss'),
+    new SlashCommandBuilder().setName('piss').setDescription('piss')
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(token);
