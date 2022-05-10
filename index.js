@@ -110,7 +110,8 @@ client.on('interactionCreate', async interaction => {
 
 client.login(token);
 
-const exitHandler = () => {
+// Server gets killed even when capturing ^C for the node process - cannot protect unsafe termination
+/*const exitHandler = () => {
     if (mcFlags.ON() || mcFlags.WORKING()) {
         setLogPause(true);
         console.log("The server is currently unsafe to terminate! Continue? (y/n)");
@@ -127,3 +128,4 @@ const exitHandler = () => {
 process.on('SIGINT', exitHandler);
 process.on('SIGTERM', exitHandler);
 process.on('SIGHUP', exitHandler);
+*/
