@@ -29,7 +29,7 @@ const setLogPause = pause => {
     }
 };
 mcEvents.on("serverOutput", data => {
-    if (!pause) process.stdout.write(data);
+    if (!_pauseLog) process.stdout.write(data);
     else _logBuffer += data + "\n";
 });
 
