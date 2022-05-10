@@ -125,17 +125,22 @@ client.on('interactionCreate', async interaction => {
             )
             .setTimestamp();
 
-        mcUtil.status("localhost", 25565, {timeout: 2000}).then(res => {
-            embed.addFields(
-                { name: "Players", value:res.players.online + "/" + res.players.max, inline: true },
-                { name: "Version", value: res.version.name, inline: true },
-                { name: "MOTD", value: res.motd.clean, inline: true }
-            );
+        if (mcFlags.ON()) {
+            mcUtil.status("localhost", 25565, {timeout: 2000}).then(res => {
+                embed.addFields(
+                    { name: "Players", value:res.players.online + "/" + res.players.max, inline: true },
+                    { name: "Version", value: res.version.name, inline: true },
+                    { name: "MOTD", value: res.motd.clean, inline: true }
+                );
+                interaction.reply({embeds:[embed]});
+            }).catch(e => {
+                embed.addField("Couldn't fetch server info", e.toString());
+                interaction.reply({embeds:[embed]});
+            });
+        } else {
+            embed.setFooter({ text:"Cannot fetch server info while server is off or busy" });
             interaction.reply({embeds:[embed]});
-        }).catch(e => {
-            embed.addField("Couldn't fetch server info", e.toString());
-            interaction.reply({embeds:[embed]});
-        });
+        }
     } else if (commandName === "piss") {
         interaction.reply("shit and cum");
     }
